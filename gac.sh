@@ -5,6 +5,11 @@
 #   --dry-run  Show generated message without committing
 #   --help     Show this help
 
+# Install Local
+# mkdir -p ~/.local/bin
+# cp gac ~/.local/bin/gac
+# chmod +x ~/.local/bin/gac
+
 set -euo pipefail
 
 LANG_OPT="ja"
