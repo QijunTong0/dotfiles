@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "gac",
+      "type": "shell",
+      "command": "gac",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false,
+        "close": false
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "gac --en",
+      "type": "shell",
+      "command": "gac --en",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "focus": false
+      },
+      "problemMatcher": []
+    }
+  ]
+}
