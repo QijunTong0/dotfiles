@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+LANGUAGE="${AI_COMMIT_LANGUAGE:-ja}"
+MODEL="${AI_COMMIT_MODEL:-sonnet}"
+
+notify() {
+  local message="$1"
+  if command -v osascript >/dev/null 2>&1; then
+    osascript -e "display notification \"${message//\"/\\\"}\" with title \"Claude One-Click Commit\"" >/dev/null 2>&1 || true
+  fi
+}
+
+fail() {
+  echo "Error: $*" >&2
+  notify "失敗: $*"
+  exit 1
+}
+
+command -v git >/dev/null 2>&1 || fail "git が見つかりません"
+command -v claude >/dev/null 2>&1 || fail "claude コマンドが見つかりません"
+claude auth status >/dev/null 2>&1 || fail "Claude Code にログインしていません。ターミナルで claude auth login を実行してください"
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || fail "Git リポジトリ内ではありません"
+cd "$REPO_ROOT"
+
+git add -A
+
+if git diff --cached --quiet; then
+  echo "コミット対象の変更はありません。"
+  notify "コミット対象の変更はありません"
+  exit 0
+fi
+
+if [[ "$LANGUAGE" == "en" ]]; then
+  LANGUAGE_INSTRUCTION="Write the commit message in English."
+else
+  LANGUAGE_INSTRUCTION="コミットメッセージ本文は日本語で書いてください。"
+fi
+
+PROMPT=$(cat <<EOF
+You are generating a Git commit message from the staged diff below.
+
+Requirements:
+- Output exactly one line.
+- Use Conventional Commits format: type: description
+- Choose an appropriate type such as feat, fix, refactor, docs, test, chore, perf, build, ci, or style.
+- Do not include Markdown, code fences, explanations, quotes, or a trailing period.
+- Be concise but specific.
+- ${LANGUAGE_INSTRUCTION}
+
+Staged diff:
+EOF
+)
+
+MESSAGE="$(
+  {
+    printf '%s\n\n' "$PROMPT"
+    git diff --cached --no-ext-diff
+  } | claude -p --model "$MODEL" \
+    | tr -d '\r' \
+    | sed -e 's/^```[a-zA-Z]*$//' -e 's/^```$//' \
+    | awk 'NF { print; exit }'
+)" || fail "Claude の実行に失敗しました。上のエラーを確認してください"
+
+[[ -n "$MESSAGE" ]] || fail "Claude がコミットメッセージを返しませんでした"
+
+echo "Commit message: $MESSAGE"
+git commit -m "$MESSAGE"
+
+BRANCH="$(git branch --show-current)"
+[[ -n "$BRANCH" ]] || fail "detached HEAD のため push できません"
+
+if git rev-parse --abbrev-ref '@{upstream}' >/dev/null 2>&1; then
+  git push
+else
+  if git remote get-url origin >/dev/null 2>&1; then
+    REMOTE="origin"
+  else
+    REMOTE="$(git remote | head -n 1)"
+  fi
+  [[ -n "${REMOTE:-}" ]] || fail "push 先の Git remote がありません"
+  git push --set-upstream "$REMOTE" "$BRANCH"
+fi
+
+echo "完了: $MESSAGE"
+notify "完了: $MESSAGE"

@@ -1,0 +1,19 @@
+[
+  {
+    "context": "Workspace",
+    "bindings": {
+      "cmd-shift-enter": [
+        "task::Spawn",
+        {
+          "task_name": "Claude One-Click Commit"
+        }
+      ],
+      "cmd-shift-alt-enter": [
+        "task::Spawn",
+        {
+          "task_name": "Claude One-Click Commit (English)"
+        }
+      ]
+    }
+  }
+]

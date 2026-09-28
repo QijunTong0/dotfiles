@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Claude One-Click Commit",
+    "command": "~/.local/bin/zed-claude-commit",
+    "env": {
+      "AI_COMMIT_LANGUAGE": "ja",
+      "AI_COMMIT_MODEL": "sonnet"
+    },
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success"
+  },
+  {
+    "label": "Claude One-Click Commit (English)",
+    "command": "~/.local/bin/zed-claude-commit",
+    "env": {
+      "AI_COMMIT_LANGUAGE": "en",
+      "AI_COMMIT_MODEL": "sonnet"
+    },
+    "use_new_terminal": false,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "on_success"
+  }
+]
