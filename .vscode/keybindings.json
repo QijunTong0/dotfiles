@@ -1,7 +1,0 @@
-[
-  {
-    "key": "cmd+shift+g cmd+shift+c",
-    "command": "workbench.action.tasks.runTask",
-    "args": "gac"
-  }
-]
