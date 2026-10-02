@@ -1,0 +1,65 @@
+{
+  "name": "claude-one-click-commit",
+  "displayName": "Claude One-Click Commit",
+  "description": "One-click git add, Claude Sonnet commit-message generation, git commit, and git push from the editor title bar.",
+  "version": "0.2.0",
+  "publisher": "local",
+  "private": true,
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "activationEvents": [
+    "onCommand:claudeOneClickCommit.commit",
+    "onCommand:claudeOneClickCommit.changeLanguage"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "claudeOneClickCommit.commit",
+        "title": "Claude Commit & Push",
+        "icon": "$(git-commit)"
+      },
+      {
+        "command": "claudeOneClickCommit.changeLanguage",
+        "title": "Claude Commit: Change Message Language"
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "claudeOneClickCommit.commit",
+          "group": "navigation@0"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Claude One-Click Commit",
+      "properties": {
+        "claudeOneClickCommit.language": {
+          "type": "string",
+          "enum": [
+            "ja",
+            "en"
+          ],
+          "enumItemLabels": [
+            "日本語",
+            "English"
+          ],
+          "default": "ja",
+          "description": "Language used for the generated commit message. Conventional Commit type prefixes remain in English."
+        },
+        "claudeOneClickCommit.claudePath": {
+          "type": "string",
+          "default": "claude",
+          "description": "Claude Code CLI executable name or absolute path."
+        }
+      }
+    }
+  },
+  "scripts": {},
+  "license": "UNLICENSED"
+}
