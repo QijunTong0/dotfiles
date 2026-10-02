@@ -26,3 +26,39 @@ Command Palette から `Claude Commit: Change Message Language` を実行する�
 ## ボタン位置
 
 `editor/title` の `navigation@0` に配置しているため、エディタタイトルの primary actions 内で最優先側（左側）に配置されます。VS Code や他拡張が同じ order を使う場合、完全な絶対位置は VS Code の並び順に依存します。
+
+
+## VSIX の生成
+
+拡張機能のディレクトリで依存関係をインストールします。
+
+```bash
+npm install
+```
+
+`vsce` を使って VSIX を生成します。
+
+```bash
+npx @vscode/vsce package
+```
+
+成功すると、カレントディレクトリに次のようなファイルが生成されます。
+
+```text
+claude-one-click-commit-0.2.0.vsix
+```
+
+生成した VSIX は、以下のコマンドでインストールできます。
+
+```bash
+code --install-extension claude-one-click-commit-0.2.0.vsix
+```
+
+または VS Code の Extensions 画面から、
+
+```text
+... → Install from VSIX...
+```
+
+を選択してインストールできます。
+```
